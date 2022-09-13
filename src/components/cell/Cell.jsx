@@ -1,5 +1,6 @@
 import './cell.sass'
 import bomb from '../../resources/icons/bomb.png'
+import flag from '../../resources/icons/finish.png'
 
 import { Component } from 'react'
 
@@ -7,16 +8,23 @@ class Cell extends Component {
     constructor(props) {
         super(props)
         this.value = props.value
-        this.isEmpty = props.value === 0
     }
 
     state = {
-        isChecked: false
+        isChecked: false,
+        flag: false
     }
 
-    handleClick = () => {
+    handleLeftClick = () => {
         this.setState({
             isChecked: true
+        })
+    }
+
+    handleRightClick = (e) => {
+        e.preventDefault()
+        this.setState({
+            flag: !this.state.flag
         })
     }
 
@@ -32,10 +40,28 @@ class Cell extends Component {
         }
     }
 
+    cellStatus = () => {
+        if (!this.state.isChecked) {
+            if (this.state.flag) {
+                return (
+                    <div className="mask flagged">
+                        <img src={flag} alt="flag" className="flag" />
+                    </div>
+                )
+            } else {
+                return (
+                    <div className="mask" onClick={this.handleLeftClick}/>
+                )
+            }
+        } else {
+            return;
+        }
+    }
+
     render() {
         return(
-            <div className='cell'>
-                {!this.state.isChecked && <div className="mask" onClick={() => this.handleClick()}/>}
+            <div className='cell' onContextMenu={e => this.handleRightClick(e)}>
+                {this.cellStatus()}
                 {this.whatContent(this.value)}
             </div>
         )

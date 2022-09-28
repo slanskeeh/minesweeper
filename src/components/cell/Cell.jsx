@@ -8,12 +8,15 @@ class Cell extends Component {
     constructor(props) {
         super(props)
         this.value = props.value
+        this.id = props.id
+        this.onOpening = props.onOpening
+        this.isOpened = props.isOpened
     }
 
     state = {
         isChecked: false,
         flag: false
-    }
+    }   
 
     handleLeftClick = () => {
         this.setState({
@@ -58,9 +61,20 @@ class Cell extends Component {
         }
     }
 
+    componentDidUpdate(prevProps) {
+        if (this.props.isOpened !== prevProps.isOpened) {
+            this.setState({isChecked: true})
+            this.clickOrNot()
+        }
+    }
+
+    clickOrNot = () => {
+        if (this.value === 0) this.onOpening(this.id)
+    }
+
     render() {
         return(
-            <div className='cell' onContextMenu={e => this.handleRightClick(e)}>
+            <div className='cell' onContextMenu={e => this.handleRightClick(e)} onClick={this.clickOrNot}>
                 {this.cellStatus()}
                 {this.whatContent(this.value)}
             </div>

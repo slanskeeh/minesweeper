@@ -1,6 +1,6 @@
 import './cell.sass'
-import bomb from '../../resources/icons/bomb.png'
-import flag from '../../resources/icons/finish.png'
+import bomb from '../../resources/icons/bomb.svg'
+import flag from '../../resources/icons/flag.svg'
 
 import { Component } from 'react'
 
@@ -11,11 +11,13 @@ class Cell extends Component {
         this.id = props.id
         this.onOpening = props.onOpening
         this.isOpened = props.isOpened
+        this.ifBomb = props.ifBomb
     }
 
     state = {
         isChecked: false,
-        flag: false
+        flag: false,
+        isEnded: false
     }   
 
     handleLeftClick = () => {
@@ -34,7 +36,7 @@ class Cell extends Component {
     whatContent = (value) => {
         if (value === 'bomb') {
             return (
-                <img src={bomb} alt="bomb" />
+                <img src={bomb} alt="bomb" style={{width: 25}} />
             )
         } else if (value === 0) {
             return ''
@@ -70,11 +72,12 @@ class Cell extends Component {
 
     clickOrNot = () => {
         if (this.value === 0) this.onOpening(this.id)
+        this.ifBomb(this.value)
     }
 
     render() {
         return(
-            <div className='cell' onContextMenu={e => this.handleRightClick(e)} onClick={this.clickOrNot}>
+            <div className='cell' onContextMenu={e => this.handleRightClick(e)} onClick={this.clickOrNot} style={{backgroundColor: this.value === 'bomb' ? '#A3293D' : '#5C5C5C'}}>
                 {this.cellStatus()}
                 {this.whatContent(this.value)}
             </div>

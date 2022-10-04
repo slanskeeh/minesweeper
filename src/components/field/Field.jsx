@@ -45,7 +45,19 @@ class Field extends Component {
         return count
     }
 
+    countBombs = () => {
+        let counter = 0
+        this.cells.forEach(item => {
+            item.forEach(cell => {
+                if (cell === -1) counter++
+            })
+        })
+        return counter
+    }
+
     state = {
+        isEnded: false,
+        isStarted: false,
         cells: this.cells.map((row, rowIndex) => (
             row.map((_, colIndex) => ({index: colIndex + rowIndex * 10, isChecked: false}))
         ))
@@ -82,27 +94,58 @@ class Field extends Component {
     }
 
     onOpening = (id) => {
-        console.log(`Cell's id: ${id}`)
+        // console.log(`Cell's id: ${id}`)
         const neighbours = this.findNeighbours(id, this.size)
         for (let cell of neighbours) {
             this.openNeighbour(cell)
         }
     }
 
+    ifBomb = (value) => {
+        if (value === 'bomb') {this.setState({
+            isEnded: true
+        })}
+    }
+
+    startGame = () => {
+        if (this.state.isStarted) {
+        return this.cells.map((item, row) => (
+            item.map((item, col) => (
+                <Cell key={col + row * 10}
+                      id={col + row * 10}
+                      value={item === -1 ? 'bomb' : this.countBombsAround(this.cells, row, col, this.props.size)}
+                      onOpening={this.onOpening}
+                      isOpened={this.state.cells[row][col].isChecked}
+                      ifBomb={this.ifBomb}
+                />
+            ))
+        ))}
+    }
 
     render() {
         return( 
             <div className="field">
-                {this.cells.map((item, row) => (
-                    item.map((item, col) => (
-                        <Cell key={col}
-                              id={col + row * 10}
-                              value={item === -1 ? 'bomb' : this.countBombsAround(this.cells, row, col, this.props.size)}
-                              onOpening={this.onOpening}
-                              isOpened={this.state.cells[row][col].isChecked}
-                        />
-                    ))
-                ))}
+                {this.state.isEnded && 
+                    <div className="lose">
+                        <div className="lose-msg">
+                            Вы проиграли
+                            <button className='btn' onClick={() => {
+                                this.setState({isEnded: false, isStarted: false})
+                                this.startGame()
+                            }}>Заново</button>
+                        </div>
+                        <div className="overlay"></div>
+                    </div>
+                }
+                {!this.state.isStarted && 
+                    <div className="start">
+                        <div className="start-msg">
+                            Начать новую игру
+                            <button className='btn' onClick={() => this.setState({isStarted: true})}>Начать</button>
+                        </div>
+                    </div>
+                }
+                {this.startGame()}
             </div>
         )
     }

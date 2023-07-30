@@ -1,0 +1,132 @@
+$field-color: #474747;
+
+.field {
+  display: inline-grid;
+  grid-template: repeat(10, 50px) / repeat(10, 50px);
+  gap: 4px;
+
+  justify-content: center;
+  align-items: center;
+
+  border: 8px solid $field-color;
+  border-radius: 4px;
+
+  background-color: $field-color;
+
+  position: relative;
+}
+
+.lose {
+  display: flex;
+  position: absolute;
+  width: calc(100% + 10px);
+  height: calc(100% + 10px);
+  border-radius: 5px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  z-index: 1000;
+
+  overflow: hidden;
+  &-msg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10000;
+
+    // width: 300px;
+    // height: 100px;
+    padding: 30px 70px;
+
+    border-radius: 10px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    background-color: #d6d6d6;
+    color: #474747;
+    font-size: 24px;
+  }
+}
+.overlay {
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+  background-color: #000;
+  cursor: not-allowed;
+}
+.restart {
+  margin-top: 10px;
+
+  width: 90px;
+  border: none;
+
+  height: 30px;
+  border-radius: 4px;
+
+  cursor: pointer;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  line-height: 25px;
+  color: #474747;
+  font-weight: bold;
+  &:hover {
+    border: 2px solid #474747;
+  }
+}
+.start {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &-msg {
+    display: flex;
+    width: 260px;
+    height: 100px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    font-size: 24px;
+  }
+}
+.btn {
+  margin-top: 10px;
+
+  padding: 20px 40px;
+  border: none;
+
+  height: 30px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  line-height: 25px;
+  font-size: 16px;
+
+  color: #474747;
+  font-weight: bold;
+  border: 2px solid #d6d6d6;
+  &:hover {
+    border: 2px solid #474747;
+  }
+}

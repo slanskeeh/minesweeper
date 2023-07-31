@@ -3,17 +3,12 @@ import bomb from "../resources/icons/bomb.svg";
 import flagSVG from "../resources/icons/flag.svg";
 // import { Component } from "react";
 import { useState, useEffect } from "react";
+import { useMemo } from "react";
 
-const Cell = ({ value, id, onOpening, isOpened, ifBomb }) => {
+const Cell = ({ id, value, onOpening, isOpened, ifBomb }) => {
   const [isChecked, setIsChecked] = useState(false);
   const [flag, setFlag] = useState(false);
   const [isEnded, setIsEnded] = useState(false);
-
-  useEffect(() => {
-    setIsChecked(true);
-    if (value === 0) onOpening(id);
-    ifBomb(value);
-  }, [isOpened]);
 
   const handleLeftClick = () => {
     setIsChecked(true);
@@ -24,21 +19,37 @@ const Cell = ({ value, id, onOpening, isOpened, ifBomb }) => {
     setFlag((flag) => !flag);
   };
 
+  const whatValue = useMemo(() => {
+    if (value === "bomb") {
+      return <img src={bomb} alt="bomb" style={{ width: 25 }} />;
+    } else if (value === 0) {
+      return "";
+    } else {
+      return value;
+    }
+  }, [value]);
+
+  const clickOrNot = () => {
+    if (value === 0) onOpening(id);
+    ifBomb(value);
+  };
+
   return (
     <div
       className={styles.cell}
+      onClick={() => clickOrNot()}
       onContextMenu={(e) => handleRightClick(e)}
-      onClick={this.clickOrNot}
       style={{
         backgroundColor: value === "bomb" ? "#A3293D" : "#5C5C5C",
       }}
     >
-      {!isChecked && flag ? (
-        <div className={`${styles.mask} ${styles.flagged}`}>
-          <img src={flagSVG} alt="flag" className={styles.flag} />
+      {!isChecked ? (
+        <div
+          className={`${styles.mask} ${flag ? styles.flagged : null}`}
+          onClick={!flag ? handleLeftClick : null}
+        >
+          {flag && <img src={flagSVG} alt="flag" className={styles.flag} />}
         </div>
-      ) : !isChecked && !flag ? (
-        <div className={styles.mask} onClick={handleLeftClick} />
       ) : null}
       {value === "bomb" ? (
         <img src={bomb} alt="bomb" style={{ width: 25 }} />
@@ -115,10 +126,10 @@ export default Cell;
 //     }
 //   }
 
-//   clickOrNot = () => {
-//     if (this.value === 0) this.onOpening(this.id);
-//     this.ifBomb(this.value);
-//   };
+// clickOrNot = () => {
+//   if (this.value === 0) this.onOpening(this.id);
+//   this.ifBomb(this.value);
+// };
 
 //   render() {
 //     return (

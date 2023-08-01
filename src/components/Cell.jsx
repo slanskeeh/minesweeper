@@ -1,14 +1,12 @@
 import styles from "../styles/modules/Cell.module.scss";
 import bomb from "../resources/icons/bomb.svg";
 import flagSVG from "../resources/icons/flag.svg";
-// import { Component } from "react";
-import { useState, useEffect } from "react";
-import { useMemo } from "react";
+
+import { useState } from "react";
 
 const Cell = ({ id, value, onOpening, isOpened, ifBomb }) => {
   const [isChecked, setIsChecked] = useState(false);
   const [flag, setFlag] = useState(false);
-  const [isEnded, setIsEnded] = useState(false);
 
   const handleLeftClick = () => {
     setIsChecked(true);
@@ -18,16 +16,6 @@ const Cell = ({ id, value, onOpening, isOpened, ifBomb }) => {
     e.preventDefault();
     setFlag((flag) => !flag);
   };
-
-  const whatValue = useMemo(() => {
-    if (value === "bomb") {
-      return <img src={bomb} alt="bomb" style={{ width: 25 }} />;
-    } else if (value === 0) {
-      return "";
-    } else {
-      return value;
-    }
-  }, [value]);
 
   const clickOrNot = () => {
     if (value === 0) onOpening(id);
@@ -40,7 +28,7 @@ const Cell = ({ id, value, onOpening, isOpened, ifBomb }) => {
       onClick={() => clickOrNot()}
       onContextMenu={(e) => handleRightClick(e)}
       style={{
-        backgroundColor: value === "bomb" ? "#A3293D" : "#5C5C5C",
+        backgroundColor: value === -1 ? "#A3293D" : "#5C5C5C",
       }}
     >
       {!isChecked ? (
@@ -51,7 +39,7 @@ const Cell = ({ id, value, onOpening, isOpened, ifBomb }) => {
           {flag && <img src={flagSVG} alt="flag" className={styles.flag} />}
         </div>
       ) : null}
-      {value === "bomb" ? (
+      {value === -1 ? (
         <img src={bomb} alt="bomb" style={{ width: 25 }} />
       ) : value === 0 ? (
         ""
@@ -63,87 +51,3 @@ const Cell = ({ id, value, onOpening, isOpened, ifBomb }) => {
 };
 
 export default Cell;
-
-// class CellCC extends Component {
-//   constructor(props) {
-//     super(props);
-//     this.value = props.value;
-//     this.id = props.id;
-//     this.onOpening = props.onOpening;
-//     this.isOpened = props.isOpened;
-//     this.ifBomb = props.ifBomb;
-//   }
-
-//   state = {
-//     isChecked: false,
-//     flag: false,
-//     isEnded: false,
-//   };
-
-//   handleLeftClick = () => {
-//     this.setState({
-//       isChecked: true,
-//     });
-//   };
-
-//   handleRightClick = (e) => {
-//     e.preventDefault();
-//     this.setState({
-//       flag: !this.state.flag,
-//     });
-//   };
-
-//   whatContent = (value) => {
-//     if (value === "bomb") {
-//       return <img src={bomb} alt="bomb" style={{ width: 25 }} />;
-//     } else if (value === 0) {
-//       return "";
-//     } else {
-//       return value;
-//     }
-//   };
-
-//   cellStatus = () => {
-//     if (!this.state.isChecked) {
-//       if (this.state.flag) {
-//         return (
-//           <div className="mask flagged">
-//             <img src={flag} alt="flag" className="flag" />
-//           </div>
-//         );
-//       } else {
-//         return <div className="mask" onClick={this.handleLeftClick} />;
-//       }
-//     } else {
-//       return;
-//     }
-//   };
-
-//   componentDidUpdate(prevProps) {
-//     if (this.props.isOpened !== prevProps.isOpened) {
-//       this.setState({ isChecked: true });
-//       this.clickOrNot();
-//     }
-//   }
-
-// clickOrNot = () => {
-//   if (this.value === 0) this.onOpening(this.id);
-//   this.ifBomb(this.value);
-// };
-
-//   render() {
-//     return (
-//       <div
-//         className="cell"
-//         onContextMenu={(e) => this.handleRightClick(e)}
-//         onClick={this.clickOrNot}
-//         style={{
-//           backgroundColor: this.value === "bomb" ? "#A3293D" : "#5C5C5C",
-//         }}
-//       >
-//         {this.cellStatus()}
-//         {this.whatContent(this.value)}
-//       </div>
-//     );
-//   }
-// }

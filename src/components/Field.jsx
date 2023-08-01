@@ -10,6 +10,7 @@ const Field = ({ size, difficulty }) => {
   const [finalCells, setFinalCells] = useState([]);
   const [isStarted, setIsStarted] = useState(false);
   const [isEnded, setIsEnded] = useState(false);
+  const [timeToRerender, setTimeToRerender] = useState(false);
 
   useEffect(() => {
     if (isStarted) {
@@ -32,10 +33,9 @@ const Field = ({ size, difficulty }) => {
 
       let correctCells = countBombsAround(cells);
 
-      setCells(correctCells);
       console.log(correctCells);
 
-      cells = correctCells.map((row, rowID) =>
+      let cellsToRender = correctCells.map((row, rowID) =>
         row.map((col, colID) => (
           <Cell
             key={col.index}
@@ -47,10 +47,28 @@ const Field = ({ size, difficulty }) => {
           />
         ))
       );
-
-      setFinalCells(cells);
+      setCells(correctCells);
+      setFinalCells(cellsToRender);
     }
   }, [isStarted]);
+
+  useEffect(() => {
+    setFinalCells(
+      cells.map((row, rowID) =>
+        row.map((col, colID) => (
+          <Cell
+            key={col.index}
+            id={col.index}
+            value={col.value}
+            onOpening={onOpening}
+            isOpened={cells[rowID][colID].isChecked}
+            ifBomb={ifBomb}
+          />
+        ))
+      )
+    );
+    setTimeToRerender(false);
+  }, [timeToRerender]);
 
   const generateCells = (size, difficulty) => {
     let cells = new Array(size);
@@ -105,27 +123,30 @@ const Field = ({ size, difficulty }) => {
     return neighbours;
   };
 
-  const openNeighbour = (id) => {
-    //   const row = Math.floor(id / 10);
-    //   const col = id % 10;
-    // let cellsTemp = cells;
-    // console.log(cells);
-    // cellsTemp[row][col].isChecked = true;
-    // setCells((cell) => (cell[row][col].isChecked = true));
-    // [[{value, id, isChecked}, {}, {}, ...], [], ...]
-    // setCells(cellsTemp);
-  };
-
   const onOpening = (cellID) => {
-    for (let cell of cellID.neighbours) {
-      openNeighbour(cell);
-    }
+    const rowID = Math.floor(cellID / 10);
+    const colID = cellID % 10;
+
+    console.log(typeof cellID, typeof rowID, typeof colID);
+
+    let cellsOnOpening = cells;
+    console.log(cellsOnOpening);
+
+    let cellToGetNeighbours = cells[rowID][colID];
+    let neighboursToOpen = cellToGetNeighbours.neighbours;
+
+    neighboursToOpen.forEach((index) => {
+      const rowID = Math.floor(index / 10);
+      const colID = index % 10;
+
+      cellsOnOpening[rowID][colID].isChecked = true;
+    });
+    setCells(cellsOnOpening);
+    setTimeToRerender(true);
   };
 
   const ifBomb = (value) => {
-    if (value === "bomb") {
-      setIsEnded(true);
-    }
+    if (value === -1) setIsEnded(true);
   };
 
   return (

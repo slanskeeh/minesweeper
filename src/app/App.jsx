@@ -6,7 +6,7 @@ function App() {
   return (
     <div className={styles.app}>
       <h1>Minesweeper</h1>
-      <Field size={10} difficulty={0.3} />
+      <Field size={10} difficulty={0.5} />
     </div>
   );
 }

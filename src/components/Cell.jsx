@@ -2,11 +2,18 @@ import styles from "../styles/modules/Cell.module.scss";
 import bomb from "../resources/icons/bomb.svg";
 import flagSVG from "../resources/icons/flag.svg";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Cell = ({ id, value, onOpening, isOpened, ifBomb }) => {
-  const [isChecked, setIsChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState(isOpened);
   const [flag, setFlag] = useState(false);
+
+  useEffect(() => {
+    if (isOpened) {
+      onOpening(id);
+      setIsChecked(true);
+    }
+  }, [isOpened]);
 
   const handleLeftClick = () => {
     setIsChecked(true);
@@ -25,7 +32,7 @@ const Cell = ({ id, value, onOpening, isOpened, ifBomb }) => {
   return (
     <div
       className={styles.cell}
-      onClick={() => clickOrNot()}
+      onClick={!flag ? clickOrNot : null}
       onContextMenu={(e) => handleRightClick(e)}
       style={{
         backgroundColor: value === -1 ? "#A3293D" : "#5C5C5C",
